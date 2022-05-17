@@ -27,7 +27,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       XXXXXXX,  BP_A,    BP_U,    BP_I,    BP_E,    BP_W,                         BP_C,    BP_T,    BP_S,     BP_R,    BP_N,  XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      XXXXXXX,  BP_Z,    BP_Y,    BP_X,    BP_K,    BP_Q,                        MT(MOD_BP_COMM, BP_COMM,   BP_G,    BP_H,    BP_F,  XXXXXXX,
+      XXXXXXX,  BP_Z,    BP_Y,    BP_X,    BP_K,    BP_Q,                        BP_COMM, BP_COMM,   BP_G,    BP_H,    BP_F,  XXXXXXX,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           XXXXXXX,  MO(1),  KC_SPC,     KC_ENT,  KC_RSFT, XXXXXXX
                                       //`--------------------------'  `--------------------------'
