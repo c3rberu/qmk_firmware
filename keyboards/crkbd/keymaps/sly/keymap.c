@@ -1,75 +1,113 @@
-/*
-Copyright 2019 @foostan
-Copyright 2020 Drashna Jaelre <@drashna>
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-#include "keymap_bepo.h"
 #include QMK_KEYBOARD_H
-#include <stdio.h>
+#include "keymap_bepo.h"
+
+enum layers {
+    _BEPO,
+    _LOWER,
+    _RAISE,
+    _ADJUST,
+};
+
+#define TABLO LT(_LOWER, KC_TAB)
+#define ENTRA LT(_RAISE, KC_ENTER)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-  [0] = LAYOUT_split_3x6_3(
-  //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      XXXXXXX,  BP_B,  BP_EACU,    BP_P,    BP_O, BP_EGRV,                        BP_V,    BP_D,    BP_L,     BP_J,    BP_M,  XXXXXXX,
-  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      XXXXXXX,  BP_A,    BP_U,    BP_I,    BP_E,    BP_W,                         BP_C,    BP_T,    BP_S,     BP_R,    BP_N,  XXXXXXX,
-  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      XXXXXXX,  BP_Z,    BP_Y,    BP_X,    BP_K,    BP_Q,                        BP_COMM, BP_COMM,   BP_G,    BP_H,    BP_F,  XXXXXXX,
-  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          XXXXXXX,  MO(1), KC_SPC,     KC_ENT,  KC_RSFT, XXXXXXX
-                                      //`--------------------------'  `--------------------------'
 
-  ),
+/* BEPO
+ *
+ * ,----------------------------------.           ,----------------------------------.
+ * |  B   |  W   |  P   |  O   |  ’   |           |  ^   |  V   |  D   |  L   |  J   |
+ * |------+------+------+------+------|           |------+------+------+------+------|
+ * |  A   |  U   |  I   |  E   |  ,   |           |  C   |  T   |  S   |  R   |  N   |
+ * |------+------+------+------+------|           |------+------+------+------+------|
+ * | Z/GUI| Y/Alt| X/Ctl| ./Sft|  K   |           |  M   | Q/Sft| G/Ctl| H/Alt| F/GUI|
+ * `----------------------------------'           `----------------------------------'
+ *                  ,------.------.------.    ,------,------.------.
+ *                  | Del  |  Tab |      |    |      |Enter |Escape|
+ *                  |      | LOWER| Space|    |BckSpc|RAISE |      |
+ *                  `------'------|      |    |      |------'------'
+ *                                |      |    |      |
+ *                                `------'    `------'
+ */
+[_BEPO] = LAYOUT(
+_______,  BP_B,        BP_W,        BP_P,          BP_O,  BP_QUOT,         BP_DCIR, BP_V ,       BP_D,        BP_L,        BP_J,    _______,
+_______,  BP_A,        BP_U,        BP_I,          BP_E,  BP_COMM,         BP_C,    BP_T,        BP_S,        BP_R,        BP_N,    _______,
+_______,LGUI_T(BP_Z), ALT_T(BP_Y), CTL_T(BP_X), SFT_T(BP_DOT),     BP_K,         BP_M,    SFT_T(BP_Q), CTL_T(BP_G), ALT_T(BP_H), LGUI_T(BP_F),  _______,
+                          KC_DEL,         TABLO,   KC_SPC,         KC_BSPC, ENTRA      , KC_ESC
+),
 
-  [1] = LAYOUT_split_3x6_3(
-  //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      XXXXXXX, KC_ESC,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      XXXXXXX,   KC_1,   KC_2,    KC_3,    KC_4,    KC_5,                         KC_6,    KC_7,    KC_8,    KC_9,    KC_0,   XXXXXXX,
-  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_BSPC,                      KC_BSPC, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_LGUI, _______,  KC_SPC,     KC_ENT,   MO(3), KC_RALT
-                                      //`--------------------------'  `--------------------------'
-  ),
+/* Lower.
+ *
+ * ,----------------------------------.           ,----------------------------------.
+ * |   |  |   É  |   &  |   œ  |   È  |           | PgUp | Home |  Up  |  End |ScrlUp|
+ * |------+------+------+------+------|           |------+------+------+------+------|
+ * |   æ  |   Ù  |   ¨  |   €  |   $  |           | PgDn | Left | Down | Right|ScrlDn|
+ * |------+------+------+------+------|           |------+------+------+------+------|
+ * |   À  |  Alt |  Ctl | Shift|   Ç  |           |      | Shift|  Ctl |  Alt |      |
+ * `----------------------------------'           `----------------------------------'
+ *                  ,------,------,------.    ,------,------,------.
+ *                  |      |      |      |    |      |      |      |
+ *                  `------'------|      |    |      |------'------'
+ *                                |      |    |      |
+ *                                `------'    `------'
+ */
+[_LOWER] = LAYOUT(
+_______, ALGR(BP_B), BP_EACU,    ALGR(BP_P), ALGR(BP_O),    BP_EGRV,        KC_PGUP,   KC_HOME, KC_UP,   KC_END,   KC_MS_WH_UP,  _______,
+_______, ALGR(BP_A), ALGR(BP_U), ALGR(BP_I), ALGR(BP_E),     BP_DLR,        KC_PGDN,   KC_LEFT, KC_DOWN, KC_RIGHT, KC_MS_WH_DOWN,  _______,
+_______, BP_AGRV,    KC_LALT,    KC_LCTL,    KC_LSFT,    BP_CCED,        _______,   KC_LSFT, KC_LCTL, KC_LALT,  _______,  _______,
+                             _______,    _______,    _______,        _______,   _______, _______
+),
 
-  [2] = LAYOUT_split_3x6_3(
-  //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      XXXXXXX, KC_EXLM,   KC_AT, KC_HASH,  KC_DLR, KC_PERC,                      KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, XXXXXXX,
-  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      KC_MINS,  KC_EQL, KC_LBRC, KC_RBRC, KC_BSLS, XXXXXXX,
-  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      KC_UNDS, KC_PLUS, KC_LCBR, KC_RCBR, KC_PIPE, XXXXXXX,
-  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_LGUI,   MO(3),  KC_SPC,     KC_ENT, _______, KC_RALT
-                                      //`--------------------------'  `--------------------------'
-  ),
+/* Raise
+ *
+ * ,----------------------------------.           ,----------------------------------.
+ * |   "  |   <  |   >  |   (  |   )  |           |   @  |   +  |   -  |   /  |   *  |
+ * |------+------+------+------+------|           |------+------+------+------+------|
+ * |   `  |   {  |   }  |   [  |   ]  |           |   ~  |   =  |   %  |   \  |   #  |
+ * |------+------+------+------+------|           |------+------+------+------+------|
+ * |   |  |  Alt |  Ctl | Shift|   '  |           |      | Shift|  Ctl |  Alt |   &  |
+ * `----------------------------------'           `----------------------------------'
+ *                  ,------,------,------.    ,------,------,------.
+ *                  |      |      |      |    |      |      |      |
+ *                  `------'------|  _   |    |      |------'------'
+ *                                |      |    |      |
+ *                                `------'     `------'
+ */
+[_RAISE] = LAYOUT(
+_______,  BP_DQUO, ALGR(BP_LDAQ), ALGR(BP_RDAQ),       BP_LPRN,       BP_RPRN,        BP_AT,      BP_PLUS,    BP_MINS,     BP_SLSH,  BP_ASTR,  _______,
+_______, S(BP_PERC),       ALGR(BP_Y),    ALGR(BP_X), ALGR(BP_LPRN), ALGR(BP_RPRN),        ALGR(BP_K), BP_EQL,     BP_PERC,     ALGR(BP_AGRV), S(BP_DLR),  _______,
+_______, ALGR(BP_B),       KC_LALT,       KC_LCTL,       KC_LSFT, ALGR(BP_COMM),        _______,    KC_LSFT,    KC_LCTL,     KC_LALT,    ALGR(BP_P),  _______,
+                                      _______,       _______,  ALGR(KC_SPC),        _______,    _______,    _______
+),
 
-  [3] = LAYOUT_split_3x6_3(
-  //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      XXXXXXX, RGB_HUI, RGB_SAI, RGB_VAI, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      XXXXXXX, RGB_HUD, RGB_SAD, RGB_VAD, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_LGUI, _______,  KC_SPC,     KC_ENT, _______, KC_RALT
-                                      //`--------------------------'  `--------------------------'
-  )
+/* Adjust (Lower + Raise)
+ * (GUI, ALT, Ctrl, Shft ONLY on left-hand home row)
+ *
+ * ,----------------------------------.           ,----------------------------------.
+ * |  F1  |  F2  |  F3  |  F4  |  F5  |           |  F6  |  F7  |  F8  |  F9  |  F10 |
+ * |------+------+------+------+------|           |------+------+------+------+------|
+ * |   1  |   2  |   3  |   4  |   5  |           |   6  |   7  |   8  |   9  |  0   |
+ * |------+------+------+------+------|           |------+------+------+------+------|
+ * |  F11 |  Alt |  Ctl | Shift|      |           |      | Shift|  Ctl |  Alt |  F12 |
+ * `----------------------------------'           `----------------------------------'
+ *                  ,------,------,------.    ,------,------,------.
+ *                  |      |      |      |    |      |      |      |
+ *                  `------'------|      |    |      |------'------'
+ *                                |      |    |      |
+ *                                `------'    `------'
+ */
+[_ADJUST] = LAYOUT(
+_______,  KC_F1,           KC_F2,      KC_F3,      KC_F4,      KC_F5,        KC_F6,    KC_F7,      KC_F8,       KC_F9,       KC_F10,  _______,
+_______,  S(BP_DQUO), S(BP_LDAQ), S(BP_RDAQ), S(BP_LPRN), S(BP_RPRN),        S(BP_AT), S(BP_PLUS), S(BP_MINS),  S(BP_SLSH),  S(BP_ASTR),  _______,
+_______,  KC_F11,        KC_LALT,    KC_LCTL,    KC_LSFT,    _______,        _______,  KC_LSFT,    KC_LCTL,     KC_LALT,     KC_F12,  _______,
+                             _______,    _______,    _______,        _______,  _______,    _______
+)
 };
+
+/*layer_state_t layer_state_set_user(layer_state_t state) {
+  return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
+}*/
+
 
 #ifdef OLED_ENABLE
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
